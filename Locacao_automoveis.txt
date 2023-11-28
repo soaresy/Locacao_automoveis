@@ -1,0 +1,33 @@
+CREATE DATABASE IF NOT EXISTS Locação;
+USE Locação;
+
+CREATE TABLE Veiculo (
+    Codigo INTEGER PRIMARY KEY,
+    Modelo VARCHAR(255),
+    Cor VARCHAR(255),
+    Placa VARCHAR(255)
+);
+
+CREATE TABLE Cliente (
+    CPF VARCHAR(11) PRIMARY KEY,
+    Nome VARCHAR(255),
+    DataNascimento DATE,
+    DiasLocacao INTEGER
+);
+
+CREATE TABLE Locacao (
+    Codigo INTEGER PRIMARY KEY,
+    DataLocacao DATE,
+    ValorLocacao NUMERIC(10,2),
+    ClienteCPF VARCHAR(11),
+    VeiculoCodigo INTEGER,
+    FOREIGN KEY (ClienteCPF) REFERENCES Cliente(CPF),
+    FOREIGN KEY (VeiculoCodigo) REFERENCES Veiculo(Codigo)
+);
+
+CREATE VIEW LocacoesComClientesVeiculos AS
+SELECT L.Codigo AS CodigoLocacao, L.DataLocacao AS DataLocacao, L.ValorLocacao AS ValorLocacao, 
+C.Nome AS NomeCliente, C.CPF AS CPFCliente, V.Modelo AS ModeloVeiculo, V.Cor AS CorVeiculo, V.Placa AS PlacaVeiculo
+FROM Locacao L
+JOIN Cliente C ON L.ClienteCPF = C.CPF
+JOIN Veiculo V ON L.VeiculoCodigo = V.Codigo;
